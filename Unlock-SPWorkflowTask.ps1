@@ -4,16 +4,23 @@ Param(
     [string]$siteUrl,
 
     [Parameter(Mandatory=$true, Position=1, HelpMessage="This is the number of the workflow task ID")]
-    [int]$itemId
+    [int]$itemId,
+    
+    [Parameter(Mandatory=$true, Position=2, HelpMessage="This is the title of the workflow tasks list")]
+    [string]$tasksList
 )
 
 # This script must be run from the SharePoint server because it uses the local DLL referenced below
 [System.Reflection.Assembly]::LoadWithPartialName(“Microsoft.SharePoint”)
 
+If ($tasksList -eq "") {
+    $tasksList = "Workflow Tasks"
+}
+
 $site = New-Object Microsoft.SharePoint.SPSite($siteUrl)
 $web = $site.OpenWeb()
 Write-Host `n`nConnected to $($web.url)
-$list = $web.Lists["Workflow Tasks"]
+$list = $web.Lists[$tasksList]
 $item = $list.GetItemByID($itemId)
 
     Try {
